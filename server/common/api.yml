@@ -1,48 +1,134 @@
 openapi: 3.0.0
 info:
-  title: Clients API
-  description: API RESTful para cadastro de clientes.
+  title: API de Clientes
   version: 1.0.0
+  description: API para cadastro e gerenciamento de clientes com autenticação JWT
 
 servers:
-  - url: http://localhost:3000/api
+  - url: http://localhost:3000
 
 paths:
-  /clients:
-    get:
-      summary: Listar clientes com filtros opcionais
-      parameters:
-        - in: query
-          name: ddd
-          schema:
-            type: string
-          description: Filtrar por DDD dos celulares
-        - in: query
-          name: name
-          schema:
-            type: string
-          description: Filtrar por parte do nome
-      responses:
-        '200':
-          description: Lista de clientes
+  /register:
     post:
-      summary: Criar cliente
+      tags:
+        - Usuários
+      summary: Cria um novo usuário
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required: [name, email, password]
       responses:
         '201':
-          description: Cliente criado
+          description: Usuário criado com sucesso
+        '400':
+          description: Erro ao criar usuário
+
+  /login:
+    post:
+      tags:
+        - Usuários
+      summary: Autentica o usuário e retorna um token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required: [email, password]
+      responses:
+        '200':
+          description: Token JWT retornado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Erro de autenticação
+
+  /clients:
+    post:
+      tags:
+        - Clientes
+      summary: Cadastra um novo cliente
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                cpf:
+                  type: string
+                emails:
+                  type: array
+                  items:
+                    type: string
+                phones:
+                  type: array
+                  items:
+                    type: string
+              required: [name, cpf, emails, phones]
+      responses:
+        '201':
+          description: Cliente criado com sucesso
+        '400':
+          description: Erro ao criar cliente
+
+    get:
+      tags:
+        - Clientes
+      summary: Lista clientes com filtros opcionais
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: ddd
+          schema:
+            type: string
+          description: Filtra clientes pelo DDD do telefone
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filtra clientes por parte do nome
+      responses:
+        '200':
+          description: Lista de clientes
+        '401':
+          description: Token inválido ou ausente
 
   /clients/{id}:
     get:
-      summary: Buscar cliente por ID
+      tags:
+        - Clientes
+      summary: Retorna os dados de um cliente
+      security:
+        - bearerAuth: []
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
             type: integer
@@ -51,11 +137,16 @@ paths:
           description: Cliente encontrado
         '404':
           description: Cliente não encontrado
+
     put:
-      summary: Atualizar cliente
+      tags:
+        - Clientes
+      summary: Atualiza um cliente
+      security:
+        - bearerAuth: []
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
             type: integer
@@ -64,39 +155,47 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              type: object
+              properties:
+                name:
+                  type: string
+                cpf:
+                  type: string
+                emails:
+                  type: array
+                  items:
+                    type: string
+                phones:
+                  type: array
+                  items:
+                    type: string
       responses:
         '200':
           description: Cliente atualizado
+        '400':
+          description: Erro ao atualizar
+
     delete:
-      summary: Deletar cliente
+      tags:
+        - Clientes
+      summary: Remove um cliente
+      security:
+        - bearerAuth: []
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
             type: integer
       responses:
         '204':
-          description: Cliente deletado
+          description: Cliente removido
+        '404':
+          description: Cliente não encontrado
 
 components:
-  schemas:
-    Client:
-      type: object
-      required:
-        - cpf
-        - name
-      properties:
-        cpf:
-          type: string
-        name:
-          type: string
-        phones:
-          type: array
-          items:
-            type: string
-        emails:
-          type: array
-          items:
-            type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

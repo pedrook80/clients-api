@@ -1,11 +1,12 @@
-FROM node:14-alpine
+FROM node:18
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY . /usr/src/app
+COPY package*.json ./
 RUN npm install
+
+COPY . .
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD npm run migrate && npm start

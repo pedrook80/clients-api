@@ -1,0 +1,4 @@
+import pool from '../../../common/db.js';
+
+export async function deleteUserUseCase(id) {
+}
