@@ -3,6 +3,7 @@ import db from '../../../common/db.js';
 export async function createClientsUseCase({ cpf, name, phones, emails }) {
   const conn = await db.getConnection();
   try {
+
     await conn.beginTransaction();
 
     const [clientResult] = await conn.execute(
@@ -15,7 +16,7 @@ export async function createClientsUseCase({ cpf, name, phones, emails }) {
     if (phones?.length) {
       for (const phone of phones) {
         await conn.execute(
-          'INSERT INTO client_phones (client_id, phone) VALUES (?, ?)',
+          'INSERT INTO phones (client_id, phone) VALUES (?, ?)',
           [clientId, phone]
         );
       }
@@ -24,7 +25,7 @@ export async function createClientsUseCase({ cpf, name, phones, emails }) {
     if (emails?.length) {
       for (const email of emails) {
         await conn.execute(
-          'INSERT INTO client_emails (client_id, email) VALUES (?, ?)',
+          'INSERT INTO emails (client_id, email) VALUES (?, ?)',
           [clientId, email]
         );
       }
