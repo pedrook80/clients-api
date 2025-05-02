@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: Clients API
+  description: API RESTful para cadastro de clientes.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /clients:
+    get:
+      summary: Listar clientes com filtros opcionais
+      parameters:
+        - in: query
+          name: ddd
+          schema:
+            type: string
+          description: Filtrar por DDD dos celulares
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filtrar por parte do nome
+      responses:
+        '200':
+          description: Lista de clientes
+    post:
+      summary: Criar cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '201':
+          description: Cliente criado
+
+  /clients/{id}:
+    get:
+      summary: Buscar cliente por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cliente encontrado
+        '404':
+          description: Cliente não encontrado
+    put:
+      summary: Atualizar cliente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '200':
+          description: Cliente atualizado
+    delete:
+      summary: Deletar cliente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Cliente deletado
+
+components:
+  schemas:
+    Client:
+      type: object
+      required:
+        - cpf
+        - name
+      properties:
+        cpf:
+          type: string
+        name:
+          type: string
+        phones:
+          type: array
+          items:
+            type: string
+        emails:
+          type: array
+          items:
+            type: string

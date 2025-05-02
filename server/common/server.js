@@ -6,7 +6,8 @@ import bodyParser from 'body-parser';
 import http from 'http';
 import os from 'os';
 import l from './logger.js';
-import OpenApiValidator from 'express-openapi-validator';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 import errorHandler from '../middlewares/error.handler.js';
 import pool from './db.js'; 
 
@@ -15,11 +16,15 @@ const app = new Express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const swaggerDocument = YAML.load(path.join(__dirname, 'api.yml'));
+
 export default class ExpressServer {
   constructor() {
     this.checkDatabaseConnection();
 
     const root = path.normalize(`${__dirname}/../..`);
+    
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     app.use(bodyParser.json({ limit: process.env.REQUEST_LIMIT || '100kb' }));
     app.use(
