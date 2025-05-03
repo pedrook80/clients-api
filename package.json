@@ -12,7 +12,7 @@
     "test:debug": "mocha --inspect-brk --exit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "migrate": "node server/migration/migrate.js"
+    "migrate": "node server/migrations/migrate.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

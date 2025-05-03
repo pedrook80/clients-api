@@ -2,7 +2,7 @@ import db from '../../../common/db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-export default async function loginUser({ email, password }) {
+export  async function loginUser({ email, password }) {
   const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
   const user = rows[0];
   if (!user) throw new Error('Usuário invalido');
