@@ -1,109 +1,30 @@
 # clients-api
 
-Teste
+A simple Node.js REST API for managing clients.
 
-## Get Started
+## Getting Started
 
-Get started developing...
+### Run locally (development)
 
-```shell
-# install deps
+```bash
 npm install
-
-# run in development mode
-npm run dev
-
-# run tests
-npm run test
-```
-
-## Install Dependencies
-
-Install all package dependencies (one time operation)
-
-```shell
-npm install
-```
-
-## Run It
-#### Run in *development* mode:
-Runs the application is development mode. Should not be used in production
-
-```shell
 npm run dev
 ```
 
-or debug it
+### Run with Docker
 
-```shell
-npm run dev:debug
+```bash
+docker-compose up --build
 ```
 
-#### Run in *production* mode:
+⚠️ Migrations are run automatically on container startup if not already applied.
+If not just run 
 
-Compiles the application and starts it in production production mode.
-
-```shell
-npm run compile
-npm start
+```bash
+npm run migrate
 ```
 
-## Test It
+### API Documentation
 
-Run the Mocha unit tests
+http://localhost:3000/docs
 
-```shell
-npm test
-```
-
-or debug them
-
-```shell
-npm run test:debug
-```
-
-## Try It
-* Open your browser to [http://localhost:3000](http://localhost:3000)
-* Invoke the `/examples` endpoint 
-  ```shell
-  curl http://localhost:3000/api/v1/examples
-  ```
-
-
-## Debug It
-
-#### Debug the server:
-
-```
-npm run dev:debug
-```
-
-#### Debug Tests
-
-```
-npm run test:debug
-```
-## Lint It
-
-View prettier linter output
-
-```
-npm run lint
-```
-
-Fix all prettier linter errors
-
-```
-npm run lint
-```
-
-## Deploy It
-
-Deploy to CloudFoundry
-
-```shell
-cf push clients-api
-```
-
-
-   
