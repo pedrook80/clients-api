@@ -8,12 +8,14 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . . 
+COPY . .
 
-COPY wait-for-mysql.sh /app/wait-for-mysql.sh
+COPY wait.sh /wait.sh
 
-RUN chmod +x /app/wait-for-mysql.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+RUN chmod +x /wait.sh
 
 EXPOSE 3000
 
-CMD /app/wait-for-mysql.sh -- npm run migrate && npm start
+CMD ["/wait.sh", "/entrypoint.sh"]
