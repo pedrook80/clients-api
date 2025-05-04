@@ -22,6 +22,7 @@ npm test
 ```
 
 ### Run with Docker
+### Dont forget to create a .env
 
 ```bash
 docker-compose up --build

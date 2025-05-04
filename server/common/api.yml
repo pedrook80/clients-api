@@ -8,7 +8,7 @@ servers:
   - url: http://localhost:3000
 
 paths:
-  /register:
+  /user:
     post:
       tags:
         - Usuários
@@ -33,7 +33,7 @@ paths:
         '400':
           description: Erro ao criar usuário
 
-  /login:
+  /user/login:
     post:
       tags:
         - Usuários
@@ -119,6 +119,39 @@ paths:
         '401':
           description: Token inválido ou ausente
 
+    put:
+      tags:
+        - Clientes
+      summary: Atualiza um cliente
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                cpf:
+                  type: string
+                emails:
+                  type: array
+                  items:
+                    type: string
+                phones:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Cliente atualizado
+        '400':
+          description: Erro ao atualizar
+
   /clients/{id}:
     get:
       tags:
@@ -137,43 +170,6 @@ paths:
           description: Cliente encontrado
         '404':
           description: Cliente não encontrado
-
-    put:
-      tags:
-        - Clientes
-      summary: Atualiza um cliente
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                cpf:
-                  type: string
-                emails:
-                  type: array
-                  items:
-                    type: string
-                phones:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        '200':
-          description: Cliente atualizado
-        '400':
-          description: Erro ao atualizar
 
     delete:
       tags:
