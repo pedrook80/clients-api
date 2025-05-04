@@ -3,7 +3,7 @@ import { deleteClientsUseCase } from '../useCases/deleteClientsUseCase.js'
 import { showClientssUseCase } from '../useCases/showClientssUseCase.js'
 import { editClientsUseCase } from '../useCases/editClientsUseCase.js'
 import { showClientsUseCase } from '../useCases/showClientsUseCase.js'
-import { validatorCpf } from '../utils/validators.js'
+import { isValidCPF, isValidPhone, isValidEmail } from '../utils/validators.js'
 
 export const create = async (req, res, next) => {
     try {
@@ -13,7 +13,23 @@ export const create = async (req, res, next) => {
         return res.status(400).json({ error: 'Dados inválidos ou incompletos.' });
       }
 
-      //if(validatorCpf(cpf)) return res.status(400).json({ error: 'CPF invalido' });
+    const cpfValidation = isValidCPF(cpf);
+    if (!cpfValidation) {
+      return res.status(400).json({ error: 'CPF invalido' });
+    }
+    
+    for (const phone of phones) {
+      const phoneValidation = isValidPhone(phone);
+      if (!phoneValidation) {
+        return res.status(400).json({ error: 'Telefone invalido' });
+      }
+    }
+    for (const email of emails) {
+      const emailValidation = isValidEmail(email);
+      if (!emailValidation) {
+        return res.status(400).json({ error: 'Email invalido' });
+      }
+    }
 
       const result = await createClientsUseCase({ cpf, name, phones, emails });
       return res.status(201).json({ message: 'Cliente criado com sucesso.', id: result.clientId });
@@ -44,7 +60,7 @@ export const create = async (req, res, next) => {
     }
   }
   
-  export const update = async (req, response, next) => {
+  export const update = async (req, res, next) => {
     try {
 
       const { id, cpf, name, phones, emails } = req.body;
@@ -53,8 +69,9 @@ export const create = async (req, res, next) => {
         return res.status(400).json({ error: 'Dados inválidos ou incompletos.' });
       }
 
-      const updateClients = await editClientsUseCase({ id, cpf, name, phones, emails }, params)
-      return response.status(200).json(updateClients)
+      await editClientsUseCase({ id, cpf, name, phones, emails })
+      
+      return res.status(200).json({ message: 'Cliente alterado com sucesso.'})
     } catch (error) {
       next(error)
     }

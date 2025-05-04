@@ -1,8 +1,10 @@
 import pool from '../../../common/db.js';
 
-export async function showClientssUseCase({ ddd, namePart }) {
+export async function showClientssUseCase({ ddd, namePart, page = 1, limit = 10 }) {
   const conn = await pool.getConnection();
   try {
+    const offset = (page - 1) * limit;
+
     let baseQuery = `
       SELECT c.id, c.cpf, c.name,
              GROUP_CONCAT(DISTINCT p.phone) AS phones,
@@ -11,7 +13,7 @@ export async function showClientssUseCase({ ddd, namePart }) {
       LEFT JOIN phones p ON c.id = p.client_id
       LEFT JOIN emails e ON c.id = e.client_id
     `;
-    
+
     const where = [];
     const params = [];
 
@@ -30,10 +32,12 @@ export async function showClientssUseCase({ ddd, namePart }) {
     }
 
     baseQuery += ' GROUP BY c.id';
+    baseQuery += ' LIMIT ? OFFSET ?';
+
+    params.push(Number(limit), Number(offset));
 
     const [rows] = await conn.query(baseQuery, params);
 
-    // transforma string de phones/emails em array
     return rows.map((row) => ({
       id: row.id,
       cpf: row.cpf,

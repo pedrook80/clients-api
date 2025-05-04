@@ -1,31 +1,28 @@
-export function validatorCpf(cpf) {
-    cpf = cpf.replace(/[^\d]+/g, ''); 
-    console.log(cpf)
-    if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) {
-      return false;
-    }
-  
-    let soma = 0;
-    for (let i = 0; i < 9; i++) {
-      soma += parseInt(cpf.charAt(i)) * (10 - i);
-    }
-    let resto = 11 - (soma % 11);
-    let digitoVerificador1 = resto >= 10 ? 0 : resto;
-  
-    if (parseInt(cpf.charAt(9)) !== digitoVerificador1) {
-      return false;
-    }
-  
-    soma = 0;
-    for (let i = 0; i < 10; i++) {
-      soma += parseInt(cpf.charAt(i)) * (11 - i);
-    }
-    resto = 11 - (soma % 11);
-    let digitoVerificador2 = resto >= 10 ? 0 : resto;
-  
-    if (parseInt(cpf.charAt(10)) !== digitoVerificador2) {
-      return false;
-    }
-  
-    return true;
-  }
+export function isValidCPF(cpf) {
+  cpf = cpf.replace(/[^\d]+/g, '');
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+  let firstDigit = (sum * 10) % 11;
+  if (firstDigit === 10 || firstDigit === 11) firstDigit = 0;
+  if (firstDigit !== parseInt(cpf[9])) return false;
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+  let secondDigit = (sum * 10) % 11;
+  if (secondDigit === 10 || secondDigit === 11) secondDigit = 0;
+  return secondDigit === parseInt(cpf[10]);
+}
+
+
+export function isValidPhone(phone) {
+  const regex = /^\(?[1-9]{2}\)? ?9?[0-9]{4}-?[0-9]{4}$/;
+  return regex.test(phone);
+}
+
+
+export function isValidEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
