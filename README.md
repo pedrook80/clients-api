@@ -35,5 +35,7 @@ npm run migrate
 
 http://localhost:3000/docs
 
+And have a postman collection in archives 
+
 
 
